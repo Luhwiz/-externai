@@ -1,0 +1,29 @@
+name: Build E2B Template
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install E2B CLI
+        run: npm install -g @e2b/cli
+
+      - name: Build and Push Template
+        env:
+          E2B_ACCESS_TOKEN: ${{ secrets.E2B_API_KEY }}
+        run: |
+          rm -f e2b.toml
+          e2b template build --name externai-react-template --dockerfile e2b.Dockerfile
